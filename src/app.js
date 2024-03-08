@@ -1,26 +1,22 @@
 import express from "express";
+import connectDB from "./config/dbConnect.js";
+import book from "./models/Book.js"
+
+const conn = await connectDB();
+
+conn.on("Error", (error) => {
+	console.error("Failed to connect to database", error);
+});
+
+conn.once("Open", () => {
+	console.log("Connected to database");
+});
 
 const app = express();
 app.use(express.json());
 
-const books = [
-	{
-		id: 1,
-		title: "Book 1"
-	},
-	{
-		id: 2,
-		title: "Book 2"
-	},
-];
-
-const searchBook = (id) => {
-	return books.findIndex(book => {
-		return book.id === Number(id)
-	})
-}
-
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+	const books = await book.find({});
 	res.status(200).send("Node API");
 });
 
